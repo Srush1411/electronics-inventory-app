@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div style="max-width:1000px;margin:30px auto;display:flex;gap:20px;">
+    <div style="flex:1" class="card">
+      <h3>Add Product</h3>
+      <input id="p_name" placeholder="Product name" />
+      <input id="p_price" placeholder="Price" type="number" />
+      <input id="p_warranty" placeholder="Warranty months (e.g. 12)" type="number" />
+      <input id="p_category" placeholder="Category (Mobiles, Laptops...)" />
+      <input id="p_stock" placeholder="Initial stock" type="number" />
+      <input id="p_image" type="file" accept="image/*" />
+      <button class="btn" onclick="addProduct()">Add Product</button>
+      <div id="addMsg" style="margin-top:10px;color:green"></div>
+    </div>
+
+    <div style="width:420px" class="card">
+      <h3>Pending Orders</h3>
+      <div id="orders"></div>
+    </div>
+  </div>
+
+<script>
+const API = "http://localhost:5000/api";
+
+async function addProduct(){
+  const name = document.getElementById("p_name").value;
+  const price = document.getElementById("p_price").value;
+  const warranty = document.getElementById("p_warranty").value;
+  const category = document.getElementById("p_category").value;
+  const stock = document.getElementById("p_stock").value || 0;
+  const file = document.getElementById("p_image").files[0];
+
+  const form = new FormData();
+  form.append("name", name);
+  form.append("price", price);
+  form.append("warrantyMonths", warranty);
+  form.append("category", category);
+  form.append("initialStock", stock);
+  if(file) form.append("image", file);
+
+  const res = await fetch(`${API}/admin/product`, { method: "POST", body: form });
+  const data = await res.json();
+  if(res.ok) {
+    document.getElementById("addMsg").innerText = "Product added!";
+    loadOrders();
+  } else {
+    document.getElementById("addMsg").innerText = data.error || "Error";
+    document.getElementById("addMsg").style.color = "red";
+  }
+}
+
+async function loadOrders(){
+  const res = await fetch(`${API}/admin/orders`);
+  const orders = await res.json();
+  const div = document.getElementById("orders");
+  div.innerHTML = orders.length ? orders.map(o => `
+    <div style="padding:8px;border-bottom:1px solid #eee;">
+      <div><b>${o.name}</b> ordered <b>${o.quantity}</b> x ${o.product ? o.product.name : o.productId}</div>
+      <div>Status: ${o.status}</div>
+      <div style="margin-top:6px;">
+        <button class="btn" onclick="approve('${o.id}')">Approve</button>
+        <button class="btn secondary" onclick="reject('${o.id}')">Reject</button>
+      </div>
+    </div>
+  `).join("") : "<p>No orders</p>";
+}
+
+async function approve(id){
+  const res = await fetch(`${API}/admin/orders/${id}/approve`, { method: "POST" });
+  await res.json();
+  loadOrders();
+}
+
+async function reject(id){
+  const res = await fetch(`${API}/admin/orders/${id}/reject`, { method: "POST" });
+  await res.json();
+  loadOrders();
+}
+
+loadOrders();
+</script>
+</body>
+</html>

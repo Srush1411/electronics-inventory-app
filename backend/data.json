@@ -1,0 +1,95 @@
+{
+  "products": [
+    {
+      "id": "prod_demo1",
+      "name": "Demo Phone",
+      "price": 15000,
+      "warrantyMonths": 12,
+      "category": "Mobiles",
+      "stock": 222,
+      "image": null,
+      "createdAt": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "prod_mi5g12z43083",
+      "name": "laptop",
+      "price": 300,
+      "warrantyMonths": 20,
+      "category": "",
+      "stock": 2,
+      "image": "/uploads/1763522947402-422519465.png",
+      "createdAt": "2025-11-19T03:29:07.408Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord_mi4ww4jsj1bz",
+      "name": "ss",
+      "phone": "111111111111111",
+      "productId": "prod_demo1",
+      "quantity": 1,
+      "serialNumber": "1",
+      "status": "APPROVED",
+      "createdAt": "2025-11-18T18:33:23.464Z",
+      "approvedAt": "2025-11-18T18:50:25.579Z",
+      "warrantyExpiry": "2026-11-18T18:50:25.579Z"
+    },
+    {
+      "id": "ord_mi5feqssd3v4",
+      "name": "Shruti",
+      "phone": "111111111111111",
+      "productId": "prod_demo1",
+      "quantity": 2,
+      "serialNumber": "123",
+      "status": "REJECTED",
+      "createdAt": "2025-11-19T03:11:45.196Z",
+      "approvedAt": "2025-11-19T03:11:57.733Z",
+      "warrantyExpiry": "2026-11-19T03:11:57.733Z",
+      "rejectedAt": "2025-11-19T03:12:31.749Z"
+    },
+    {
+      "id": "ord_mi5fgbx3cf6s",
+      "name": "Shruti",
+      "phone": "111111111111111",
+      "productId": "prod_demo1",
+      "quantity": 2,
+      "serialNumber": "1234",
+      "status": "PENDING",
+      "createdAt": "2025-11-19T03:12:59.223Z"
+    },
+    {
+      "id": "ord_mi5fr7lyh06p",
+      "name": "Shruti",
+      "phone": "111111111111111",
+      "productId": "prod_demo1",
+      "quantity": 3,
+      "serialNumber": "123",
+      "status": "APPROVED",
+      "createdAt": "2025-11-19T03:21:26.854Z",
+      "approvedAt": "2025-11-19T03:21:36.945Z",
+      "warrantyExpiry": "2026-11-19T03:21:36.945Z"
+    },
+    {
+      "id": "ord_mi5gbpv3221v",
+      "name": "Shruti",
+      "phone": "111111111111111",
+      "productId": "prod_demo1",
+      "quantity": 1,
+      "serialNumber": "123",
+      "status": "APPROVED",
+      "createdAt": "2025-11-19T03:37:23.631Z",
+      "approvedAt": "2025-11-19T03:37:36.905Z",
+      "warrantyExpiry": "2026-11-19T03:37:36.905Z"
+    },
+    {
+      "id": "ord_mi5gjv5ihyw9",
+      "name": "aaa",
+      "phone": "111111111111111",
+      "productId": "prod_demo1",
+      "quantity": 1,
+      "serialNumber": "123",
+      "status": "PENDING",
+      "createdAt": "2025-11-19T03:43:43.734Z"
+    }
+  ]
+}

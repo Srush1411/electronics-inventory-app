@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Electronics Store - Browse</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .track-btn {
+      padding: 6px 14px;
+      background: #005eff;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+    }
+    .track-btn:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+
+      <div class="topbar">
+        <h1>Electronics Store</h1>
+
+        <!-- ⭐ CUSTOMER ORDER TRACKING BUTTON -->
+        <button class="track-btn" onclick="openTracking()">
+          My Orders / Tracking
+        </button>
+      </div>
+
+      <!-- SEARCH BAR -->
+      <div class="search">
+        <input id="searchq" placeholder="Search products or category"/>
+        <button class="btn" onclick="loadProducts()">Search</button>
+      </div>
+
+      <!-- CATEGORY DROPDOWN -->
+      <div>
+        <label>Category filter</label>
+        <select id="categoryFilter" onchange="loadProducts()">
+          <option value="">All</option>
+          <option>Mobiles</option>
+          <option>Laptops</option>
+          <option>Accessories</option>
+          <option>TV</option>
+          <option>Appliances</option>
+        </select>
+      </div>
+
+      <hr>
+
+      <!-- PRODUCTS GRID -->
+      <div id="productGrid" class="product-grid"></div>
+
+    </div>
+
+    <!-- RIGHT SIDE (EMPTY FOR CUSTOMER) -->
+    <div class="side">
+      <!-- NOTHING HERE | Customer should not see Admin / Stock links -->
+    </div>
+  </div>
+
+
+<script>
+const API = "http://localhost:5000/api";
+
+/* ⭐ OPEN TRACKING PAGE  */
+function openTracking(){
+  window.location.href = "tracking.html";
+}
+
+/* ⭐ LOAD PRODUCTS */
+async function loadProducts(){
+  const q = document.getElementById("searchq").value;
+  const category = document.getElementById("categoryFilter").value;
+
+  const url = new URL(API + "/products");
+  if(q) url.searchParams.set("q", q);
+  if(category) url.searchParams.set("category", category);
+
+  const res = await fetch(url);
+  const products = await res.json();
+
+  const grid = document.getElementById("productGrid");
+  grid.innerHTML = products.map(p => `
+    <div class="product-card" onclick="openProduct('${p.id}')">
+      <img src="${p.image ? p.image : 'https://via.placeholder.com/320x240?text=No+Image'}" />
+
+      <div class="product-title">${p.name}</div>
+      <div class="product-meta">
+        Price: ₹${p.price} • Stock: ${p.stock}
+      </div>
+    </div>
+  `).join("");
+}
+
+function openProduct(id){
+  window.location.href = `product.html?id=${id}`;
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>

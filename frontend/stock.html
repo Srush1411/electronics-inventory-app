@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Stock Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div style="max-width:720px;margin:30px auto;" class="card">
+    <h3>Stock Management</h3>
+    <div>
+      <label>Select product</label>
+      <select id="productSelect"></select>
+    </div>
+    <div>
+      <label>Quantity to add</label>
+      <input id="addQty" type="number" value="1" />
+    </div>
+    <button class="btn" onclick="updateStock()">Add Stock</button>
+    <div id="msg" style="margin-top:10px;color:green"></div>
+    <hr>
+    <div id="inventory"></div>
+  </div>
+
+<script>
+const API = "http://localhost:5000/api";
+
+async function loadProducts(){
+  const res = await fetch(`${API}/products`);
+  const products = await res.json();
+  const sel = document.getElementById("productSelect");
+  sel.innerHTML = products.map(p => `<option value="${p.id}">${p.name} (stock: ${p.stock})</option>`).join("");
+  renderInventory(products);
+}
+
+async function updateStock(){
+  const productId = document.getElementById("productSelect").value;
+  const addQty = Number(document.getElementById("addQty").value || 0);
+  const res = await fetch(`${API}/admin/stock`, {
+    method: "POST",
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ productId, addQuantity: addQty })
+  });
+  const data = await res.json();
+  document.getElementById("msg").innerText = data.message || "Updated";
+  loadProducts();
+}
+
+function renderInventory(products){
+  const inv = document.getElementById("inventory");
+  inv.innerHTML = products.map(p => `<div style="padding:8px;border-bottom:1px solid #eee">${p.name} — stock: ${p.stock}</div>`).join("");
+}
+
+loadProducts();
+</script>
+</body>
+</html>

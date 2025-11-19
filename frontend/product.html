@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Product Detail</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div style="max-width:1000px;margin:30px auto;">
+    <a href="index.html">← Back to catalog</a>
+    <div id="content" class="card" style="margin-top:14px;"></div>
+  </div>
+
+<script>
+const API = "http://localhost:5000/api";
+
+function qs(param) { return new URLSearchParams(location.search).get(param); }
+
+async function load(){
+  const id = qs("id");
+  if(!id) {
+    document.getElementById("content").innerHTML = "<p>No product selected</p>";
+    return;
+  }
+  const res = await fetch(`${API}/products/${id}`);
+  if(!res.ok) return document.getElementById("content").innerHTML = "<p>Product not found</p>";
+  const p = await res.json();
+  document.getElementById("content").innerHTML = `
+    <div class="product-detail">
+      <img src="${p.image ? p.image : 'https://via.placeholder.com/320'}" alt="">
+      <div style="flex:1;">
+        <h2>${p.name}</h2>
+        <p>Category: ${p.category}</p>
+        <p>Price: ₹${p.price}</p>
+        <p>Warranty: ${p.warrantyMonths} months</p>
+        <p>Stock: ${p.stock}</p>
+
+        <hr>
+        <h4>Place Order</h4>
+        <input id="cust_name" placeholder="Your name" />
+        <input id="cust_phone" placeholder="Phone number" />
+        <input id="qty" type="number" min="1" value="1" />
+        <input id="serial" placeholder="Serial number (optional)" />
+        <button class="btn" onclick="placeOrder('${p.id}')">Place Order</button>
+
+        <div id="msg" style="margin-top:10px;color:green"></div>
+      </div>
+    </div>
+  `;
+}
+
+async function placeOrder(productId){
+  const name = document.getElementById("cust_name").value;
+  const phone = document.getElementById("cust_phone").value;
+  const quantity = Number(document.getElementById("qty").value || 0);
+  const serial = document.getElementById("serial").value;
+
+  const res = await fetch(`${API}/orders`, {
+    method: "POST",
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ name, phone, productId, quantity, serialNumber: serial })
+  });
+  const data = await res.json();
+  if(res.ok) {
+    document.getElementById("msg").innerText = data.message || "Order placed";
+  } else {
+    document.getElementById("msg").innerText = data.error || "Failed";
+    document.getElementById("msg").style.color = "red";
+  }
+}
+
+load();
+</script>
+</body>
+</html>
